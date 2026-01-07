@@ -52,7 +52,7 @@ while True:
     pTime = cTime
     cv2.putText(img, "fps:"+str(int(fps)), (10,75), cv2.FONT_HERSHEY_PLAIN, 3, ((255,0,0)),5)
     #ekrandaki yazılar eklendi
-    
+    #diğer yazılar eklendi
     cv2.imshow("img", img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
