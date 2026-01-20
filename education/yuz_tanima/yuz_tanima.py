@@ -4,11 +4,11 @@ import cv2
 import matplotlib.pyplot as plt
 
 # içe aktar 
-einstein = cv2.imread("einstein.jpg", 0)
+einstein = cv2.imread(r"d:\git\education\yuz_tanima\einstein.jpg", 0)
 plt.figure(), plt.imshow(einstein, cmap = "gray"), plt.axis("off")
 
 # sınıflandırıcı
-face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(r"d:\git\education\yuz_tanima\haarcascade_frontalface_default.xml")
 
 face_rect = face_cascade.detectMultiScale(einstein)
 
@@ -18,7 +18,7 @@ plt.figure(), plt.imshow(einstein, cmap = "gray"), plt.axis("off")
 
 # barce
 # içe aktar 
-barce = cv2.imread("barcelona.jpg", 0)
+barce = cv2.imread(r"d:\git\education\yuz_tanima\barcelona.jpg", 0)
 plt.figure(), plt.imshow(barce, cmap = "gray"), plt.axis("off")
 
 face_rect = face_cascade.detectMultiScale(barce, minNeighbors = 7)
