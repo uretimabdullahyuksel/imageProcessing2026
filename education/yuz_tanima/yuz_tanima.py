@@ -17,7 +17,7 @@ for (x,y,w,h) in face_rect:
 plt.figure(), plt.imshow(einstein, cmap = "gray"), plt.axis("off")
 
 # barce
-# içe aktar 
+# içe aktar
 barce = cv2.imread(r"d:\git\education\yuz_tanima\barcelona.jpg", 0)
 plt.figure(), plt.imshow(barce, cmap = "gray"), plt.axis("off")
 
