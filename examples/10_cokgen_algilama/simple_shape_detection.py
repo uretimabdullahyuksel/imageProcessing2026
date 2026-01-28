@@ -34,7 +34,7 @@ for cnt in contours:
         cv2.putText(img,"Hexagon",(x,y),font1,1,(0))
         
     else:
-        cv2.putText(img,"Ellipse",(x,y),font1,1,(0))
+        cv2.putText(img,"Circle",(x,y),font1,1,(0))
 
 cv2.imshow("IMG",img)
 
