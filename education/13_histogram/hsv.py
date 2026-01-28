@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-img = cv2.imread("red_blue.jpg") 
+img = cv2.imread(r"d:\git\education\13_histogram\red_blue.jpg") 
 img_vis = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 plt.figure()
 plt.imshow(img_vis)
@@ -19,7 +19,7 @@ for i, c in enumerate(color):
     plt.plot(hist, color = c ) 
    
 # mask
-golden_gate = cv2.imread("goldenGate.jpg") 
+golden_gate = cv2.imread(r"d:\git\education\13_histogram\goldenGate.jpg") 
 golden_gate_vis = cv2.cvtColor(golden_gate, cv2.COLOR_BGR2RGB)
 plt.figure()
 plt.imshow(golden_gate_vis)    
@@ -47,7 +47,7 @@ plt.plot(masked_img_hist)
 # histogram equalization :
 # We will learn the concepts of histogram equalization and use it to improve the contrast of our images.
     
-img = cv2.imread('hist_equ.jpg',0)
+img = cv2.imread(r'd:\git\education\13_histogram\hist_equ.jpg',0)
 plt.figure()
 plt.imshow(img, cmap = "gray")
 
@@ -63,6 +63,8 @@ plt.imshow(eq_img, cmap = "gray")
 eq_img_hist = cv2.calcHist([eq_img], channels = [0], mask = None, histSize = [256], ranges = [0,256])
 plt.figure()
 plt.plot(eq_img_hist)
+
+plt.show()
 
 
 
