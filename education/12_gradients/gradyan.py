@@ -4,7 +4,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-img = cv2.imread("sudoku.jpg", 0) # sıfırın anlamı gray scale
+img = cv2.imread(r"d:\git\education\12_gradients\sudoku.jpg", 0) # sıfırın anlamı gray scale
 plt.figure()
 plt.imshow(img, cmap = "gray")
 plt.axis("off")
@@ -31,3 +31,5 @@ plt.figure()
 plt.imshow(laplacian, cmap = "gray")
 plt.axis("off")
 plt.title("Laplacian")
+
+plt.show()
