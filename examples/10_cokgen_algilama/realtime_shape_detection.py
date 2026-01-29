@@ -10,17 +10,23 @@ cv2.namedWindow("Settings")
 cv2.createTrackbar("Lower-Hue","Settings",0,180,nothing)
 cv2.createTrackbar("Lower-Saturation","Settings",0,255,nothing)
 cv2.createTrackbar("Lower-Value","Settings",0,255,nothing)
-cv2.createTrackbar("Upper-Hue","Settings",0,180,nothing)
-cv2.createTrackbar("Upper-Saturation","Settings",0,255,nothing)
-cv2.createTrackbar("Upper-Value","Settings",0,255,nothing)
+
+cv2.createTrackbar("Upper-Hue","Settings",180,180,nothing)
+cv2.createTrackbar("Upper-Saturation","Settings",255,255,nothing)
+cv2.createTrackbar("Upper-Value","Settings",255,255,nothing)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
+kernel = np.ones((5,5),np.uint8)
 
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-while 1:
-    ret,frame = cap.read()
     frame = cv2.flip(frame,1)
-    hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    hsv = cv2.GaussianBlur(hsv, (7,7), 0)
 
     lh = cv2.getTrackbarPos("Lower-Hue","Settings")
     ls = cv2.getTrackbarPos("Lower-Saturation","Settings")
@@ -32,41 +38,37 @@ while 1:
     lower_color = np.array([lh,ls,lv])
     upper_color = np.array([uh,us,uv])
 
-    mask = cv2.inRange(hsv,lower_color,upper_color)
-    kernel = np.ones((5,5),np.uint8)
-    mask = cv2.erode(mask,kernel)
+    mask = cv2.inRange(hsv, lower_color, upper_color)
 
-    contours,_ = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+
+    contours,_ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     for cnt in contours:
-        area  = cv2.contourArea(cnt)
-        
-        epsilon = 0.02*cv2.arcLength(cnt,True)
-        approx = cv2.approxPolyDP(cnt,epsilon,True)
-        
-        x = approx.ravel()[0]
-        y = approx.ravel()[1]
+        area = cv2.contourArea(cnt)
+        if area < 100:
+            continue
 
-        if area > 400:
-            cv2.drawContours(frame,[approx],0,(0,0,0),5)
-            
-            if len(approx)==3:
-                cv2.putText(frame,"Triangle",(x,y),font,1,(0,0,0))
-                
-            elif len(approx)==4:
-                cv2.putText(frame,"Rectangle",(x,y),font,1,(0,0,0))
-                
-            elif len(approx)>6:
-                cv2.putText(frame,"Circle",(x,y),font,1,(0,0,0))
+        epsilon = 0.02 * cv2.arcLength(cnt, True)
+        approx = cv2.approxPolyDP(cnt, epsilon, True)
 
-    cv2.imshow("frame",frame)
-    cv2.imshow("mask",mask)
+        x, y = approx.ravel()[0], approx.ravel()[1]
+
+        cv2.drawContours(frame, [approx], 0, (0,0,0), 3)
+
+        if len(approx) == 3:
+            cv2.putText(frame, "Triangle", (x,y), font, 1, (0,0,0), 2)
+        elif len(approx) == 4:
+            cv2.putText(frame, "Rectangle", (x,y), font, 1, (0,0,0), 2)
+        elif len(approx) > 6:
+            cv2.putText(frame, "Circle", (x,y), font, 1, (0,0,0), 2)
+
+    cv2.imshow("frame", frame)
+    cv2.imshow("mask", mask)
 
     if cv2.waitKey(3) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
-
-    
-
