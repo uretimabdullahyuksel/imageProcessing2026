@@ -4,7 +4,7 @@ import numpy as np
 def nothing(x):
     pass
 
-cap = cv2.VideoCapture("hsv3.mp4")
+cap = cv2.VideoCapture("hsv4.mp4")
 
 if not cap.isOpened():
     raise SystemExit("hsv.mp4 acilamadi! Dosya yolu/ismi yanlis veya codec sorunu var.")
