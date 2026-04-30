@@ -3,6 +3,7 @@
 import cv2
 from keras.models import Sequential, load_model
 import numpy as np
+from pathlib import Path
 
 #preprocess
 
@@ -16,15 +17,31 @@ def preProcess(img):
     #son hali geri döndürdük
     return img
 
-cap = cv2.VideoCapture(1)
-#kamerayı açıyoruz
+cap = cv2.VideoCapture(0)
+if not cap.isOpened():
+    cap = cv2.VideoCapture(1)
+if not cap.isOpened():
+    raise RuntimeError("Kamera açılamadı. Lütfen doğru kamera indeksini kontrol edin.")
+# kamerayı açıyoruz
 cap.set(3,480)
 cap.set(4,480)
-#genişlik ve yükseklik ayarlandı
+# genişlik ve yükseklik ayarlandı
 
-model = load_model("optimized_kontakAlgilamaEgitim.h5")
+model_candidates = [
+    Path("optimized_kontakAlgilamaEgitim.h5"),
+    Path("hataAlgilamaEgitim.h5")
+]
+model_path = next((p for p in model_candidates if p.exists()), None)
+if model_path is None:
+    raise FileNotFoundError(
+        "Model dosyası bulunamadı. Lütfen aşağıdaki dosyalardan birini proje dizinine ekleyin:\n"
+        + "\n".join(str(p) for p in model_candidates)
+    )
+model = load_model(model_path)
+assert model is not None, f"Model yüklenemedi: {model_path}"
+print(f"Yüklenen model: {model_path}")
 # model = load_model("hataAlgilamaEgitim.h5")
-#modelimizi yüklüyoruz
+# modelimizi yüklüyoruz
 
 
 while True:
