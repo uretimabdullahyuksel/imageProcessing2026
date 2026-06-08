@@ -51,11 +51,11 @@ def draw_boxes_on_disp(disp, boxes, clsids, confs, names, scale, conf_thresh, fo
         cv2.putText(disp, label, (sx1 + 2, max(15, sy1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness + 1, cv2.LINE_AA)
         cv2.putText(disp, label, (sx1 + 2, max(15, sy1 - 6)), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 255, 0), max(1, thickness - 1), cv2.LINE_AA)
 
-#kodlar güncellendi.
 
 # Configuration: edit these values directly in the file
 CONFIG = {
     # Path to the trained weights you want to use. Use relative path from project root.
+    # bu kısım yeni nesne üzerinde çalışılırken güncellenecek
     'MODEL': 'runs/pso_final/pso_it1_s2_1780619305/weights/best.pt',
     # Camera index (0 = default webcam). Set to video file path later if needed.
     'CAM': 0,
