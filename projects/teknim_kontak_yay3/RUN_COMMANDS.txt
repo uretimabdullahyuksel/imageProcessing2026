@@ -1,0 +1,64 @@
+# RUN_COMMANDS.txt
+# Command list for dataset preparation, training, and inference.
+# Copy this entire file and paste it to the assistant later to trigger training.
+# Replace placeholders (e.g. <FULL_IMAGES_DIR>) with your actual paths before running.
+
+--- Environment (one-time)
+pip install --upgrade pip
+pip install ultralytics opencv-python
+# Install torch appropriate for your system (CPU example):
+pip install torch torchvision
+
+--- Prepare dataset (example workflow)
+# 1) Place full images in the folder `images/` and example crops in `0/` and `1/` folders.
+# 2) Run template matching to generate YOLO labels and annotated checks.
+python projects/teknim_kontak_yay3/match_and_label.py --full_dir images --examples 0:yayli 1:yaysiz --out dataset --thresh 0.7 --iou 0.3
+
+# 3) Create train/val/test splits and copy matching labels (adjust fractions if needed)
+python projects/teknim_kontak_yay3/create_splits.py --src images --labels dataset/labels --out . --train 0.8 --val 0.1 --test 0.1
+
+--- Verify data.yaml
+# Ensure `data.yaml` in projects/teknim_kontak_yay3 points to train/val/test image folders:
+# train: train/images
+# val: valid/images  <-- if your create_splits used 'val', update data.yaml accordingly
+# test: test/images
+
+--- Optional: download yolo26n pretrained if missing
+python - <<'PY'
+from pathlib import Path
+import urllib.request
+p = Path('d:/git/projects/teknim_kontak_yay3/yolo26n.pt')
+if not p.exists():
+    print('Downloading yolo26n.pt...')
+    url = 'https://github.com/ultralytics/assets/releases/download/v0.0.0/yolo26n.pt'
+    urllib.request.urlretrieve(url, str(p))
+    print('Downloaded to', p)
+else:
+    print('yolo26n.pt already exists')
+PY
+
+--- Training (direct)
+# Simple direct training with Ultralytics (recommended for one-shot training):
+yolo detect train model=yolo26n.pt data=projects/teknim_kontak_yay3/data.yaml epochs=100 imgsz=640
+
+--- Training (PSO tuner - optional)
+# Run PSO tuner (search + training). This will create multiple runs under `runs/pso`.
+python projects/teknim_kontak_yay3/train_with_pso.py --data projects/teknim_kontak_yay3/data.yaml --base yolo26n.pt --project runs/pso --swarm 4 --iters 2 --epochs 100 --imgsz 640
+
+--- After training
+# Best weights will be in a run folder like `runs/<project>/<run>/weights/best.pt`.
+# Example: runs/pso_final/pso_it1_s2_1780619305/weights/best.pt
+
+--- Inference / display
+python projects/teknim_kontak_yay3/show_capture.py --source images/7.jpg --model runs/<your_run>/weights/best.pt --conf 0.6 --scale 0.5
+
+--- Archive or clean runs (optional)
+# Move old runs to archive_runs instead of deleting immediately
+mkdir archive_runs
+Move-Item .\runs\* archive_runs\
+
+--- Notes for the assistant when you paste this file later
+# - I (the assistant) will run the commands in this order automatically when you paste them back.
+# - Make sure placeholders like `<your_run>` are replaced with actual paths or run names.
+# - If you want the assistant to run without asking, paste this file content exactly as-is (or with
+#   the appropriate placeholders filled) in the chat and include the single line `RUN_NOW` at the top.

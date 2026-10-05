@@ -1,0 +1,10 @@
+## Minimal data.yaml for Ultralytics training
+names:
+  - yayli
+  - yaysiz
+nc: 2
+
+# Paths used by training scripts (relative to project root)
+train: train/images
+val: valid/images
+test: test/images
