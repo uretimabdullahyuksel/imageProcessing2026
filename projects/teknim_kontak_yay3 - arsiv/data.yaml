@@ -1,0 +1,13 @@
+names:
+- yayli
+- yaysiz
+nc: 2
+roboflow:
+  license: CC BY 4.0
+  project: kontak_det
+  url: https://universe.roboflow.com/varistor/kontak_det/dataset/2
+  version: 2
+  workspace: varistor
+test: test/images
+train: train/images
+val: valid/images
